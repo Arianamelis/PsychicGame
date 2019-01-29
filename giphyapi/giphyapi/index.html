@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Giphy API</title>
+</head>
+
+<body>
+        <button id="animal-button">glorious animal button</button>
+        <div id="gifs-appear-here">
+            </div>
+          
+      
+        <form id="animal-form">
+          <label for="animal-input">Add an animal, Yo!</label>
+          <input type="text" id="animal-input">
+          <br>
+      
+          
+          <input id="add-animal" type="submit" value="Add a animal Yo!">
+          
+        </form>
+      
+        <div animal row2>
+
+        </div>
+      
+    <div id="animal-container">
+      <button data-animal-input="duck">duck</button>
+      <button data-animal-input="cat">cat</button>
+      <button data-animal-input="elephant">elephant</button>
+      <button data-animal-input="dog">dog</button>
+      <button data-animal-input="sloth">sloth</button>
+    </div>
+      
+      
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+
+$(document.body).on("click", "button", function() {
+    //  $("button").on("click", function() {
+         debugger
+    var animals = ["duck", "cat", "elephant", "dog", "sloth"];
+    var animalToSearch =  $(this).attr('data-animal-input'); 
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + animalToSearch + "&api_key=HRrieImCm0gVZVE1jeTCE9CzuIhkA4T6";
+
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    })
+    .then(function(response) {
+          // Storing an array of results in the results variable
+          var results = response.data;
+
+          // Looping over every result item
+          for (var i = 0; i < results.length; i++) {
+
+            // Only taking action if the photo has an appropriate rating
+            if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+              // Creating a div for the gif
+              var gifDiv = $("<div>");
+                    var rating = results[i].rating;
+
+// Creating a paragraph tag with the result item's rating
+var p = $("<p>").text("Rating: " + rating);
+
+// Creating an image tag
+var animalImage = $("<img>");
+
+// Giving the image tag an src attribute of a proprty pulled off the
+// result item
+animalImage.attr("src", results[i].images.fixed_height.url);
+
+// Appending the paragraph and personImage we created to the "gifDiv" div we created
+gifDiv.append(p);
+gifDiv.append(animalImage);
+
+// Prepending the gifDiv to the "#gifs-appear-here" div in the HTML
+$("#gifs-appear-here").prepend(gifDiv);
+}
+}
+});
+});
+
+
+    $("#add-animal").on("click", function(event) {
+        event.preventDefault();
+        
+        var animal = $("#animal-input").val().trim();
+        var btn = $("<button>");
+        btn.attr('data-animal-input', animal);
+        btn.text(animal);
+            // Adding the button to the HTML
+            $("#animal-container").append(btn);
+        
+      });
+
+    // animalToSearch.push(animal);
+
+     
+  </script>
+
+</body>
+
+</html>
